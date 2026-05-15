@@ -648,7 +648,21 @@ const AW_SIG_COLLECTION = 'signals';
 
 let localStream;
 let peerConnections = {};
-const iceServers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+// ==========================================
+// INI BAGIAN YANG SAYA UBAH (STUN SERVERS)
+// ==========================================
+const iceServers = { 
+    iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
+        { urls: 'stun:stun4.l.google.com:19302' },
+        { urls: 'stun:stun.services.mozilla.com' }
+    ] 
+};
+// ==========================================
 
 window.joinVC = async () => {
     const vcArea = document.getElementById('vc-area');
@@ -663,7 +677,9 @@ window.joinVC = async () => {
             type: 'join', data: 'hello', to: 'all', from: currentUser
         });
     } catch(err) {
-        alert("Gagal akses kamera/mic. Pastikan izin browser nyala! (Gunakan HTTPS/Localhost)");
+        // KITA UBAH BAGIAN INI BIAR MESIN YANG BICARA
+        alert("Penyakit aslinya: " + err.message);
+        console.error(err);
         vcArea.classList.add('hidden');
     }
 };
