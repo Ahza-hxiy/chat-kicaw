@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grup Kicaw - Bebas Undefined</title>
+    <title>Grup Kicaw - Final Pro & HP Friendly</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --pink: #ff85a1; --pink-dark: #f06292; --glass: rgba(255, 255, 255, 0.35); --glass-border: rgba(255, 255, 255, 0.5); }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
+        /* 100dvh biar pas dengan layar HP kalau keyboard muncul */
         body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 10px; overflow: hidden; }
         .main-wrapper { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 10px; height: 100%; position: relative; }
         
@@ -36,6 +37,7 @@
         .re-btn:active { transform: scale(1.2); }
 
         .input-area { padding: 8px 12px; display: flex; gap: 8px; background: rgba(255,255,255,0.2); align-items: center; }
+        /* Font size 16px penting agar HP tidak otomatis zoom saat ngetik */
         #msg-input { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; outline: none; background: white; font-size: 16px; }
         .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; background: white; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
 
@@ -124,6 +126,7 @@
                 <p style="margin-bottom: 8px; font-weight: 600; color: #999;">KONTAK PENGEMBANG</p>
                 <a href="https://wa.me/6285692107849" target="_blank" class="dev-item">💬 WhatsApp: <b>085692107849</b></a>
                 <a href="https://www.instagram.com/ahzaaaa.hxiy?igsh=MW5zNGVscTJramVpcw==" target="_blank" class="dev-item">📸 Instagram: <b>@ahzaaaa.hxiy</b></a>
+                <a href="https://app.u.shopeepay.co.id/u/qsX9eS6EgzsSmx2aUwNda" target="_blank" class="dev-item">☕ Traktir Kopi: <b>ShopeePay</b></a>
                 <p onclick="closeSettings()" style="margin-top:15px; cursor:pointer; font-weight: 600; color: #ccc;">[ TUTUP ]</p>
             </div>
         </div>
@@ -248,7 +251,7 @@
             }
         };
 
-        // RENDER CHAT (DI SINI PERBAIKAN "UNDEFINED" NYA)
+        // RENDER CHAT
         function initChat() {
             const win = document.getElementById('chat-window');
             onChildAdded(ref(db, "messages"), (snap) => {
@@ -262,7 +265,6 @@
                 let dt = d.timestamp ? new Date(d.timestamp) : new Date();
                 let time = dt.getHours().toString().padStart(2,'0') + ":" + dt.getMinutes().toString().padStart(2,'0');
                 
-                // FALLBACK JIKA DATA LAMA BOLONG
                 let textContent = d.text || ""; 
                 let senderName = d.senderName || d.sender || "Anggota";
 
