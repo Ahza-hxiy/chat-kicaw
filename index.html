@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grup Kicaw - Permanent Chat</title>
+    <title>Grup Kicaw - Bebas Undefined</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --pink: #ff85a1; --pink-dark: #f06292; --glass: rgba(255, 255, 255, 0.35); --glass-border: rgba(255, 255, 255, 0.5); }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 10px; overflow: hidden; }
-        .main-wrapper { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 10px; height: 98vh; position: relative; }
-        .group-header { background: var(--glass); backdrop-filter: blur(15px); border-radius: 50px; padding: 12px; border: 1px solid var(--glass-border); text-align: center; flex-shrink: 0; z-index: 10; }
-        .group-header h2 { color: white; font-size: 1.1rem; letter-spacing: 2px; }
-        .chat-container { flex: 1; background: var(--glass); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; overflow: hidden; position: relative; z-index: 5; }
-        header { padding: 12px 15px; background: rgba(255, 255, 255, 0.2); display: flex; align-items: center; border-bottom: 1px solid var(--glass-border); cursor: pointer; flex-shrink: 0; }
-        .avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid white; margin-right: 10px; object-fit: cover; }
-        .user-name { font-weight: 600; color: #444; font-size: 0.9rem; }
-        #chat-window { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; position: relative; }
+        
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 10px; overflow: hidden; }
+        .main-wrapper { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 10px; height: 100%; position: relative; }
+        
+        .group-header { background: var(--glass); backdrop-filter: blur(15px); border-radius: 50px; padding: 10px; border: 1px solid var(--glass-border); text-align: center; flex-shrink: 0; z-index: 10; }
+        .group-header h2 { color: white; font-size: 1rem; letter-spacing: 2px; }
+
+        .chat-container { flex: 1; background: var(--glass); backdrop-filter: blur(20px); border-radius: 25px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; overflow: hidden; position: relative; z-index: 5; }
+        
+        header { padding: 10px 15px; background: rgba(255, 255, 255, 0.2); display: flex; align-items: center; border-bottom: 1px solid var(--glass-border); cursor: pointer; flex-shrink: 0; }
+        .avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid white; margin-right: 10px; object-fit: cover; }
+        .user-name { font-weight: 600; color: #444; font-size: 0.85rem; }
+
+        #chat-window { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; position: relative; -webkit-overflow-scrolling: touch; }
         .msg { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 0.85rem; word-wrap: break-word; position: relative; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .msg.me { align-self: flex-end; background: var(--pink); color: white; border-bottom-right-radius: 2px; }
         .msg.other { align-self: flex-start; background: white; color: #444; border-bottom-left-radius: 2px; }
@@ -24,18 +29,25 @@
         .msg.sticker-msg { background: none !important; padding: 0 !important; box-shadow: none !important; }
         .msg.sticker-msg img { width: 130px; height: 130px; border-radius: 0; }
         .time { font-size: 0.6rem; display: block; margin-top: 4px; text-align: right; opacity: 0.7; }
-        .reaction-bar { display: flex; justify-content: center; gap: 12px; padding: 8px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
-        .re-btn { font-size: 1.2rem; cursor: pointer; background: none; border: none; }
-        .input-area { padding: 10px 15px; display: flex; gap: 8px; background: rgba(255,255,255,0.2); flex-shrink: 0; align-items: center; }
-        #msg-input { flex: 1; padding: 12px 15px; border-radius: 25px; border: none; outline: none; background: white; font-size: 0.9rem; }
-        .icon-btn { width: 42px; height: 42px; border-radius: 50%; border: none; cursor: pointer; background: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        .bottom-section { flex-shrink: 0; background: rgba(255,255,255,0.1); }
+        .reaction-bar { display: flex; justify-content: center; gap: 12px; padding: 6px; }
+        .re-btn { font-size: 1.2rem; cursor: pointer; background: none; border: none; transition: 0.2s; }
+        .re-btn:active { transform: scale(1.2); }
+
+        .input-area { padding: 8px 12px; display: flex; gap: 8px; background: rgba(255,255,255,0.2); align-items: center; }
+        #msg-input { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; outline: none; background: white; font-size: 16px; }
+        .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; background: white; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+
         .screen { position: absolute; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .modal { background: white; padding: 20px; border-radius: 30px; width: 100%; max-width: 380px; text-align: center; overflow-y: auto; max-height: 90vh; }
+        .modal { background: white; padding: 20px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; overflow-y: auto; max-height: 90vh; }
         .hidden { display: none !important; }
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #ddd; outline: none; font-size: 16px; }
         .primary-btn { width:100%; padding:12px; background:var(--pink); color:white; border:none; border-radius:12px; font-weight:600; cursor:pointer; }
-        .dev-section { margin-top: 25px; padding-top: 15px; border-top: 1px dotted #ccc; font-size: 0.8rem; color: #666; }
+        
+        .dev-section { margin-top: 20px; padding-top: 15px; border-top: 1px dotted #ccc; font-size: 0.8rem; color: #666; }
         .dev-item { margin-bottom: 5px; display: block; text-decoration: none; color: #444; }
+        
         #reaction-zone { position: absolute; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
         .floating-emoji { position: absolute; bottom: 0; font-size: 2rem; animation: flyUpChat 2s ease-out forwards; }
         @keyframes flyUpChat { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-400px) translateX(var(--randX)) scale(1.2); opacity: 0; } }
@@ -44,33 +56,39 @@
 <body>
     <div class="main-wrapper">
         <div class="group-header"><h2>GRUP KICAW ✨</h2></div>
+        
         <div class="chat-container">
             <header onclick="openSettings()">
                 <img id="my-avatar" class="avatar" src="img/foto1.jpg">
                 <div>
                     <p id="my-name" class="user-name">Memuat...</p>
-                    <p style="font-size: 0.6rem; color: var(--pink-dark); font-weight: 600;">Profil & Pengaturan</p>
+                    <p style="font-size: 0.6rem; color: var(--pink-dark); font-weight: 600;">Klik Profil & Pengaturan</p>
                 </div>
             </header>
+
             <div id="chat-window"><div id="reaction-zone"></div></div>
-            <div id="sticker-panel" style="display:none; grid-template-columns:repeat(3,1fr); gap:10px; padding:15px; background:white; position:absolute; bottom:65px; left:15px; right:15px; border-radius:20px; z-index:100; box-shadow:0 -5px 20px rgba(0,0,0,0.1);"></div>
-            <div class="reaction-bar">
-                <button class="re-btn" onclick="sendReaction('❤️')">❤️</button>
-                <button class="re-btn" onclick="sendReaction('😂')">😂</button>
-                <button class="re-btn" onclick="sendReaction('👍')">👍</button>
-                <button class="re-btn" onclick="sendReaction('🔥')">🔥</button>
-            </div>
-            <div class="input-area">
-                <button class="icon-btn" onclick="toggleStickers()">😊</button>
-                <button class="icon-btn" onclick="document.getElementById('file-input').click()">📎</button>
-                <input type="file" id="file-input" hidden accept="image/*">
-                <input type="text" id="msg-input" placeholder="Ketik pesan...">
-                <button id="send-btn" class="icon-btn" style="background:var(--pink); color:white;">➤</button>
+            
+            <div id="sticker-panel" style="display:none; grid-template-columns:repeat(3,1fr); gap:10px; padding:15px; background:white; position:absolute; bottom:110px; left:15px; right:15px; border-radius:20px; z-index:100; box-shadow:0 -5px 20px rgba(0,0,0,0.1);"></div>
+            
+            <div class="bottom-section">
+                <div class="reaction-bar">
+                    <button class="re-btn" onclick="sendReaction('❤️')">❤️</button>
+                    <button class="re-btn" onclick="sendReaction('😂')">😂</button>
+                    <button class="re-btn" onclick="sendReaction('👍')">👍</button>
+                    <button class="re-btn" onclick="sendReaction('🔥')">🔥</button>
+                </div>
+                <div class="input-area">
+                    <button class="icon-btn" onclick="toggleStickers()">😊</button>
+                    <button class="icon-btn" onclick="document.getElementById('file-input').click()">📎</button>
+                    <input type="file" id="file-input" hidden accept="image/*">
+                    <input type="text" id="msg-input" placeholder="Ketik pesan..." onfocus="window.scrollToBottom()">
+                    <button id="send-btn" class="icon-btn" style="background:var(--pink); color:white;">➤</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- PREVIEW -->
+    <!-- PREVIEW GAMBAR -->
     <div id="preview-screen" class="screen hidden">
         <div class="modal">
             <h3>Kirim Gambar?</h3>
@@ -93,7 +111,7 @@
         </div>
     </div>
 
-    <!-- SETTINGS -->
+    <!-- SETTINGS / PROFIL -->
     <div id="settings-screen" class="screen hidden">
         <div class="modal">
             <h3>Profil Saya</h3>
@@ -134,31 +152,53 @@
         let selectedAvatar = "img/foto1.jpg";
         let tempFileData = null;
 
+        // SCROLL FIX
+        window.scrollToBottom = () => {
+            setTimeout(() => {
+                const win = document.getElementById('chat-window');
+                win.scrollTop = win.scrollHeight;
+            }, 300);
+        };
+
+        function fixDriveUrl(url) {
+            if (!url) return "";
+            if (url.includes("drive.google.com") || url.includes("googleusercontent.com")) {
+                const match = url.match(/[-\w]{25,}/);
+                if (match) return `https://lh3.googleusercontent.com/u/0/d/${match[0]}`;
+            }
+            return url;
+        }
+
+        // FUNGSI LOGIN
         window.handleLogin = async (p, s) => {
             const phone = p || document.getElementById('phone').value.trim();
             const pass = s || document.getElementById('pass').value.trim();
-            if(!phone || !pass) return;
-            const snap = await get(ref(db, 'users/' + phone));
-            if (snap.exists() && snap.val().password === pass) loginSuccess(phone, pass, snap.val());
-            else if (!snap.exists()) {
-                const newUser = { password: pass, name: document.getElementById('reg-name').value || "Kicaw Mania", avatar: "img/foto1.jpg" };
-                await set(ref(db, 'users/' + phone), newUser);
-                loginSuccess(phone, pass, newUser);
-            } else { alert("Sandi Salah!"); location.reload(); }
+            if(!phone || !pass) { alert("Isi Nomor HP dan Password!"); return; }
+            
+            try {
+                const snap = await get(ref(db, 'users/' + phone));
+                if (snap.exists() && snap.val().password === pass) loginSuccess(phone, pass, snap.val());
+                else if (!snap.exists()) {
+                    const newUser = { password: pass, name: document.getElementById('reg-name').value || "Anggota Kicaw", avatar: "img/foto1.jpg" };
+                    await set(ref(db, 'users/' + phone), newUser);
+                    loginSuccess(phone, pass, newUser);
+                } else { alert("Sandi Salah!"); location.reload(); }
+            } catch (err) { alert("Gagal koneksi ke server!"); console.log(err); }
         };
 
         function loginSuccess(phone, pass, data) {
             currentUser = phone;
             localStorage.setItem('chat_phone', phone); localStorage.setItem('chat_pass', pass);
             document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('my-name').innerText = data.name;
-            document.getElementById('my-avatar').src = data.avatar;
-            selectedAvatar = data.avatar;
+            document.getElementById('my-name').innerText = data.name || phone; // Fallback jika nama tidak ada
+            document.getElementById('my-avatar').src = data.avatar || "img/foto1.jpg";
+            selectedAvatar = data.avatar || "img/foto1.jpg";
             initChat(); initReactions(); setupStickers();
         }
 
         if(currentUser && currentPass) handleLogin(currentUser, currentPass);
 
+        // STIKER
         function setupStickers() {
             const p = document.getElementById('sticker-panel'); p.innerHTML = "";
             for(let i=1; i<=6; i++) {
@@ -171,8 +211,9 @@
                 p.appendChild(img);
             }
         }
-        window.toggleStickers = () => { const p = document.getElementById('sticker-panel'); p.style.display = p.style.display === 'grid' ? 'none' : 'grid'; };
+        window.toggleStickers = () => { const p = document.getElementById('sticker-panel'); p.style.display = p.style.display === 'grid' ? 'none' : 'grid'; window.scrollToBottom(); };
 
+        // UPLOAD GAMBAR
         document.getElementById('file-input').onchange = (e) => {
             const file = e.target.files[0]; if(!file) return;
             const reader = new FileReader(); reader.readAsDataURL(file);
@@ -186,60 +227,58 @@
 
         document.getElementById('confirm-send-btn').onclick = async () => {
             if(!tempFileData) return;
-            const btn = document.getElementById('confirm-send-btn'); btn.innerText = "⏳";
+            const btn = document.getElementById('confirm-send-btn'); btn.innerText = "⏳ Mengirim..."; btn.disabled = true;
             try {
                 const response = await fetch(APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(tempFileData) });
                 const res = await response.json();
                 if(res.status === "success") {
-                    const name = document.getElementById('my-name').innerText;
-                    // SEKARANG URL FOTO DISIMPAN PERMANEN DI FIREBASE
-                    await push(ref(db, "messages"), { 
-                        sender: currentUser, 
-                        senderName: name, 
-                        text: res.url, 
-                        isImage: true, 
-                        timestamp: serverTimestamp() 
-                    });
-                    const dLink = res.url.replace("lh3.googleusercontent.com/u/0/d/", "drive.google.com/file/d/");
-                    await push(ref(db, "messages"), { 
-                        sender: currentUser, 
-                        senderName: name, 
-                        text: "Link Drive: " + dLink, 
-                        isImage: false, 
-                        timestamp: serverTimestamp() 
-                    });
+                    const directUrl = fixDriveUrl(res.url);
+                    await push(ref(db, "messages"), { sender: currentUser, senderName: document.getElementById('my-name').innerText, text: directUrl, isImage: true, timestamp: serverTimestamp() });
                 }
-            } catch (e) { alert("Gagal!"); } finally { btn.innerText = "Kirim"; closePreview(); }
+            } catch (e) { alert("Gagal Kirim!"); } finally { btn.innerText = "Kirim"; btn.disabled = false; closePreview(); window.scrollToBottom(); }
         };
 
+        // PESAN TEKS
         document.getElementById('send-btn').onclick = () => {
             const txt = document.getElementById('msg-input').value.trim();
             if (txt) {
                 push(ref(db, "messages"), { sender: currentUser, senderName: document.getElementById('my-name').innerText, text: txt, isSticker: false, isImage: false, timestamp: serverTimestamp() });
                 document.getElementById('msg-input').value = "";
+                window.scrollToBottom();
             }
         };
 
+        // RENDER CHAT (DI SINI PERBAIKAN "UNDEFINED" NYA)
         function initChat() {
             const win = document.getElementById('chat-window');
             onChildAdded(ref(db, "messages"), (snap) => {
-                const d = snap.val(); const isMe = d.sender === currentUser;
+                const d = snap.val(); 
+                const isMe = d.sender === currentUser;
                 const div = document.createElement('div');
                 div.className = `msg ${isMe ? 'me' : 'other'} ${d.isSticker ? 'sticker-msg' : ''}`;
                 div.id = "msg-" + snap.key;
-                div.onclick = () => { if(isMe && confirm("Hapus Pesan?")) remove(ref(db, "messages/" + snap.key)); };
+                div.onclick = () => { if(isMe && confirm("Hapus Pesan Ini?")) remove(ref(db, "messages/" + snap.key)); };
+                
                 let dt = d.timestamp ? new Date(d.timestamp) : new Date();
                 let time = dt.getHours().toString().padStart(2,'0') + ":" + dt.getMinutes().toString().padStart(2,'0');
-                let body = d.text;
-                if(d.isSticker) body = `<img src="stiker${d.text}.jpg">`;
-                else if(d.isImage || body.toString().includes("googleusercontent.com")) body = `<img src="${body}">`;
-                else if(body.toString().includes("drive.google.com")) body = `<a href="${body.replace('Link Drive: ', '')}" target="_blank" style="color:inherit;">${body}</a>`;
-                div.innerHTML = `<small style="font-size:0.6rem; display:block; opacity:0.8; font-weight:600;">${isMe ? 'Anda' : d.senderName}</small>${body}<span class="time">${time}</span>`;
+                
+                // FALLBACK JIKA DATA LAMA BOLONG
+                let textContent = d.text || ""; 
+                let senderName = d.senderName || d.sender || "Anggota";
+
+                let bodyHtml = "";
+                if(d.isSticker) bodyHtml = `<img src="stiker${textContent}.jpg">`;
+                else if(d.isImage || (textContent.toString().includes("googleusercontent.com"))) bodyHtml = `<img src="${textContent}" loading="lazy">`;
+                else if(textContent.toString().includes("drive.google.com")) bodyHtml = `<a href="${textContent}" target="_blank" style="color:inherit; text-decoration:underline;">Buka Link</a>`;
+                else bodyHtml = textContent;
+
+                div.innerHTML = `<small style="font-size:0.6rem; display:block; opacity:0.8; font-weight:600;">${isMe ? 'Anda' : senderName}</small>${bodyHtml}<span class="time">${time}</span>`;
                 win.appendChild(div); win.scrollTop = win.scrollHeight;
             });
             onChildRemoved(ref(db, "messages"), (snap) => { document.getElementById("msg-" + snap.key)?.remove(); });
         }
 
+        // REAKSI EMOT
         window.sendReaction = (emoji) => push(ref(db, "reactions"), { emoji: emoji, time: Date.now() });
         function initReactions() {
             onChildAdded(ref(db, "reactions"), (snap) => {
@@ -250,6 +289,7 @@
             });
         }
 
+        // SETTINGS / PROFIL
         window.openSettings = () => {
             document.getElementById('settings-screen').classList.remove('hidden');
             const list = document.getElementById('avatar-list'); list.innerHTML = "";
