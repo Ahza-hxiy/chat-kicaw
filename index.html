@@ -1,12 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grup Kicaw Ultimate</title>
+    <title>Grup Kicaw Ultimate - Custom Profile + VC + Aesthetic iOS</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
 
     <style>
         :root {
@@ -74,6 +75,7 @@
             background:rgba(255,255,255,0.2);
             border-bottom:1px solid var(--glass-border);
             cursor:pointer;
+            z-index: 10;
         }
 
         .avatar{
@@ -100,195 +102,139 @@
             position:relative;
         }
 
-        .msg-row{
-            display:flex;
-            align-items:flex-end;
-            gap:8px;
-        }
+        .msg-row{ display:flex; align-items:flex-end; gap:8px; }
+        .msg-row.me{ flex-direction:row-reverse; }
 
-        .msg-row.me{
-            flex-direction:row-reverse;
-        }
-
-        .msg-avatar{
-            width:28px;
-            height:28px;
-            border-radius:50%;
-            object-fit:cover;
-            border:1px solid white;
-            flex-shrink:0;
-        }
+        .msg-avatar{ width:28px; height:28px; border-radius:50%; object-fit:cover; border:1px solid white; flex-shrink:0; }
 
         .msg{
-            max-width:75%;
-            padding:10px 14px;
-            border-radius:18px;
-            word-wrap:break-word;
-            font-size:0.85rem;
-            box-shadow:0 2px 5px rgba(0,0,0,0.05);
+            max-width:75%; padding:10px 14px; border-radius:18px; word-wrap:break-word;
+            font-size:0.85rem; box-shadow:0 2px 5px rgba(0,0,0,0.05); position: relative;
         }
+        .msg.me{ background:var(--pink); color:white; border-bottom-right-radius:2px; }
+        .msg.other{ background:white; color:#444; border-bottom-left-radius:2px; }
+        .msg img{ width:100%; border-radius:12px; display:block; margin-top:5px; }
 
-        .msg.me{
-            background:var(--pink);
-            color:white;
-            border-bottom-right-radius:2px;
-        }
+        .sticker-msg{ background:none !important; padding:0 !important; box-shadow:none !important; }
+        .sticker-msg img{ width:130px; height:130px; border-radius:0; }
+        .time{ display:block; margin-top:4px; font-size:0.6rem; opacity:0.7; text-align:right; }
 
-        .msg.other{
-            background:white;
-            color:#444;
-            border-bottom-left-radius:2px;
-        }
+        .bottom-section{ flex-shrink:0; z-index: 10; }
+        .reaction-bar{ display:flex; justify-content:center; gap:12px; padding:6px; }
+        .re-btn{ background:none; border:none; font-size:1.2rem; cursor:pointer; transition: transform 0.2s; }
+        .re-btn:hover { transform: scale(1.3); }
 
-        .msg img{
-            width:100%;
-            border-radius:12px;
-            display:block;
-            margin-top:5px;
-        }
+        .input-area{ display:flex; gap:8px; padding:10px; align-items:center; background:rgba(255,255,255,0.2); }
+        #msg-input{ flex:1; border:none; outline:none; border-radius:20px; padding:12px 15px; font-size:16px; background:white; }
 
-        .sticker-msg{
-            background:none !important;
-            padding:0 !important;
-            box-shadow:none !important;
-        }
+        .icon-btn{ width:42px; height:42px; border-radius:50%; border:none; cursor:pointer; background:white; font-size:1rem; }
 
-        .sticker-msg img{
-            width:130px;
-            height:130px;
-            border-radius:0;
-        }
+        .screen{ position:absolute; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); display:flex; justify-content:center; align-items:center; z-index:9999; padding:20px; }
+        .modal{ width:100%; max-width:350px; background:white; border-radius:20px; padding:20px; overflow-y:auto; max-height:90vh; }
+        .hidden{ display:none !important; }
 
-        .time{
-            display:block;
-            margin-top:4px;
-            font-size:0.6rem;
-            opacity:0.7;
-            text-align:right;
-        }
+        input[type="text"], input[type="password"], input[type="tel"]{ width:100%; padding:12px; border-radius:12px; border:1px solid #ddd; margin:8px 0; outline:none; font-size:16px; }
+        .primary-btn{ width:100%; padding:12px; border:none; border-radius:12px; background:var(--pink); color:white; font-weight:600; cursor:pointer; }
 
-        .bottom-section{
-            flex-shrink:0;
-        }
-
-        .reaction-bar{
-            display:flex;
-            justify-content:center;
-            gap:12px;
-            padding:6px;
-        }
-
-        .re-btn{
-            background:none;
-            border:none;
-            font-size:1.2rem;
-            cursor:pointer;
-        }
-
-        .input-area{
-            display:flex;
-            gap:8px;
-            padding:10px;
-            align-items:center;
-            background:rgba(255,255,255,0.2);
-        }
-
-        #msg-input{
-            flex:1;
-            border:none;
-            outline:none;
-            border-radius:20px;
-            padding:12px 15px;
-            font-size:16px;
-            background:white;
-        }
-
-        .icon-btn{
-            width:42px;
-            height:42px;
-            border-radius:50%;
-            border:none;
-            cursor:pointer;
-            background:white;
-            font-size:1rem;
-        }
-
-        .screen{
-            position:absolute;
-            inset:0;
-            background:rgba(0,0,0,0.7);
-            backdrop-filter:blur(10px);
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            z-index:9999;
-            padding:20px;
-        }
-
-        .modal{
-            width:100%;
-            max-width:350px;
-            background:white;
-            border-radius:20px;
-            padding:20px;
-            overflow-y:auto;
-            max-height:90vh;
-        }
-
-        .hidden{
-            display:none !important;
-        }
-
-        input{
-            width:100%;
-            padding:12px;
-            border-radius:12px;
-            border:1px solid #ddd;
-            margin:8px 0;
-            outline:none;
-            font-size:16px;
-        }
-
-        .primary-btn{
-            width:100%;
-            padding:12px;
-            border:none;
-            border-radius:12px;
-            background:var(--pink);
-            color:white;
-            font-weight:600;
-            cursor:pointer;
-        }
-
-        #reaction-zone{
-            position:absolute;
-            inset:0;
-            pointer-events:none;
-            overflow:hidden;
-        }
-
-        .floating-emoji{
-            position:absolute;
-            bottom:0;
-            font-size:2rem;
-            animation:flyUpChat 2s ease-out forwards;
-        }
+        #reaction-zone{ position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index: 50; }
+        .floating-emoji{ position:absolute; bottom:0; font-size:2rem; animation:flyUpChat 2s ease-out forwards; }
 
         @keyframes flyUpChat{
-            0%{
-                transform:translateY(0) scale(0.5);
-                opacity:0;
-            }
-
-            20%{
-                opacity:1;
-            }
-
-            100%{
-                transform:translateY(-400px) translateX(var(--randX)) scale(1.2);
-                opacity:0;
-            }
+            0%{ transform:translateY(0) scale(0.5); opacity:0; }
+            20%{ opacity:1; }
+            100%{ transform:translateY(-400px) translateX(var(--randX)) scale(1.2); opacity:0; }
         }
+
+        /* ========================================================= */
+        /* ✨ CSS ANIMASI TOMBOL LUCU & AESTHETIC ✨ */
+        /* ========================================================= */
+
+        .avatar, .icon-btn, .vc-btn {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        header:hover .avatar {
+            transform: scale(1.15) rotate(-5deg);
+            box-shadow: 0 4px 15px rgba(255, 133, 161, 0.6);
+            border-color: var(--pink);
+        }
+
+        .icon-btn:hover {
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        .icon-btn:active {
+            transform: scale(0.9) translateY(0);
+        }
+
+        #send-btn:hover {
+            transform: translateY(-4px) scale(1.1) rotate(15deg);
+        }
+
+        .vc-btn:hover {
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 6px 15px rgba(255,255,255,0.3);
+        }
+        .vc-btn:active {
+            transform: scale(0.9);
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 133, 161, 0.7); transform: scale(1); }
+            50% { box-shadow: 0 0 0 12px rgba(255, 133, 161, 0); transform: scale(1.08); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 133, 161, 0); transform: scale(1); }
+        }
+        .btn-vc-pulse {
+            animation: pulseGlow 2s infinite;
+        }
+        .btn-vc-pulse:hover {
+            animation: none; 
+            transform: scale(1.15) rotate(10deg);
+        }
+
+        /* ========================================================= */
+        /* ✨ CSS ANIMASI PANEL/MODAL SMOOTH ALA iOS ✨ */
+        /* ========================================================= */
+
+        /* Animasi membesar mulus */
+        @keyframes iosScaleUp {
+            0% { opacity: 0; transform: scale(0.6); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Buka pengaturan profil (Titik pusat dari atas tengah) */
+        #settings-screen:not(.hidden) .modal {
+            transform-origin: top center;
+            animation: iosScaleUp 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* Buka area VC (Titik pusat dari tombol kamera di KANAN ATAS) */
+        #vc-area:not(.hidden) {
+            transform-origin: top right;
+            animation: iosScaleUp 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* Buka panel stiker (Titik pusat dari ikon stiker di KIRI BAWAH) */
+        #sticker-panel {
+            transform-origin: bottom left;
+            animation: iosScaleUp 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* Buka preview gambar (Titik pusat dari ikon klip di KIRI BAWAH) */
+        #preview-screen:not(.hidden) .modal {
+            transform-origin: bottom center;
+            animation: iosScaleUp 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        /* Layar hitam di belakang modal fade-in perlahan */
+        @keyframes fadeInBg {
+            0% { background: rgba(0,0,0,0); backdrop-filter: blur(0px); }
+            100% { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); }
+        }
+        .screen:not(.hidden) {
+            animation: fadeInBg 0.3s ease-out forwards;
+        }
+
     </style>
 </head>
 <body>
@@ -310,16 +256,31 @@
                     Klik Profil & Pengaturan
                 </p>
             </div>
+
+            <button onclick="event.stopPropagation(); joinVC()" class="icon-btn btn-vc-pulse" style="margin-left:auto; background: var(--pink); color: white; z-index: 20;">📹</button>
         </header>
 
+        <!-- AREA VIDEO CALL -->
+        <div id="vc-area" class="hidden" style="background: rgba(0,0,0,0.85); padding: 15px; border-bottom: 1px solid #444; z-index: 40; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button onclick="toggleAudio()" id="btn-audio" class="vc-btn" style="width: 45px; height: 45px; border-radius: 50%; border: none; font-size: 1.2rem; cursor: pointer; background: #fff; color: #333;">🎤</button>
+                <button onclick="toggleVideo()" id="btn-video" class="vc-btn" style="width: 45px; height: 45px; border-radius: 50%; border: none; font-size: 1.2rem; cursor: pointer; background: #fff; color: #333;">📷</button>
+                <button onclick="leaveVC()" class="vc-btn" style="width: 45px; height: 45px; border-radius: 50%; border: none; font-size: 1.2rem; cursor: pointer; background: #ff4757; color: white;">✖</button>
+            </div>
+            <div id="video-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 250px; overflow-y: auto;">
+                <video id="local-video" autoplay playsinline muted style="width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; background: #222; transform: scaleX(-1); border: 2px solid #555;"></video>
+            </div>
+        </div>
+
+        <div id="reaction-zone"></div>
+        
         <div id="chat-window">
-            <div id="reaction-zone"></div>
+            <!-- Pesan akan masuk ke sini -->
         </div>
 
         <div id="sticker-panel" style="display:none;grid-template-columns:repeat(3,1fr);gap:10px;padding:15px;background:white;position:absolute;bottom:110px;left:15px;right:15px;border-radius:20px;z-index:100;box-shadow:0 -5px 20px rgba(0,0,0,0.1);"></div>
 
         <div class="bottom-section">
-
             <div class="reaction-bar">
                 <button class="re-btn" onclick="sendReaction('❤️')">❤️</button>
                 <button class="re-btn" onclick="sendReaction('😂')">😂</button>
@@ -330,14 +291,9 @@
             <div class="input-area">
                 <button class="icon-btn" onclick="toggleStickers()">😊</button>
                 <button class="icon-btn" onclick="document.getElementById('file-input').click()">📎</button>
-
                 <input type="file" id="file-input" hidden accept="image/*">
-
                 <input type="text" id="msg-input" placeholder="Ketik pesan...">
-
-                <button id="send-btn" class="icon-btn" style="background:var(--pink);color:white;">
-                    ➤
-                </button>
+                <button id="send-btn" class="icon-btn" style="background:var(--pink);color:white;">➤</button>
             </div>
         </div>
     </div>
@@ -347,104 +303,62 @@
 <div id="login-screen" class="screen">
     <div class="modal">
         <h3>Masuk Kicaw</h3>
-
         <input type="tel" id="phone" placeholder="Nomor HP">
         <input type="text" id="reg-name" placeholder="Nama Panggilan">
         <input type="password" id="pass" placeholder="Password">
-
-        <button onclick="handleLogin()" class="primary-btn">
-            Mulai
-        </button>
+        <button onclick="handleLogin()" class="primary-btn">Mulai</button>
     </div>
 </div>
 
-<!-- SETTINGS -->
+<!-- SETTINGS & PROFIL -->
 <div id="settings-screen" class="screen hidden">
     <div class="modal">
-
         <h3>Profil Saya</h3>
+
+        <div style="margin: 15px 0; text-align: center;">
+            <img id="custom-avatar-preview" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid var(--pink); margin-bottom:10px; display:none; margin-left:auto; margin-right:auto;">
+            <button onclick="document.getElementById('custom-avatar-input').click()" style="width:100%; padding:10px; border-radius:12px; border:2px solid var(--pink); background:white; color:var(--pink); font-weight:600; cursor:pointer;">
+                📷 Unggah Foto Sendiri
+            </button>
+            <input type="file" id="custom-avatar-input" hidden accept="image/*">
+        </div>
+
+        <p style="font-size:0.8rem; font-weight:600; color:#888; text-align:center; margin:10px 0;">--- ATAU PILIH AVATAR ---</p>
 
         <div id="avatar-list" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0;"></div>
 
         <input type="text" id="edit-name" placeholder="Nama Baru">
         <input type="password" id="edit-pass" placeholder="Password Baru">
 
-        <button onclick="saveProfile()" class="primary-btn">
-            Simpan
-        </button>
-
-        <button onclick="handleLogout()" style="width:100%;padding:12px;margin-top:10px;border-radius:12px;border:1px solid red;background:white;color:red;cursor:pointer;">
-            Logout
-        </button>
+        <button onclick="saveProfile()" class="primary-btn">Simpan</button>
+        <button onclick="handleLogout()" style="width:100%;padding:12px;margin-top:10px;border-radius:12px;border:1px solid red;background:white;color:red;cursor:pointer;">Logout</button>
 
         <div style="margin-top:20px;padding-top:15px;border-top:1px dashed #ddd;">
-            <p style="font-size:0.8rem;font-weight:600;color:#999;margin-bottom:10px;">
-                KONTAK PENGEMBANG
-            </p>
-
-            <a href="https://app.u.shopeepay.co.id/u/qsX9eS6EgzsSmx2aUwNda"
-               target="_blank"
-               style="display:block;text-decoration:none;color:#444;margin-bottom:8px;font-size:0.85rem;">
-               ☕ Buy Me Coffee (ShopeePay)
-            </a>
-
-            <a href="https://wa.me/6285692107849"
-               target="_blank"
-               style="display:block;text-decoration:none;color:#444;margin-bottom:8px;font-size:0.85rem;">
-               💬 WhatsApp: 085692107849
-            </a>
-
-            <a href="https://www.instagram.com/ahzaaaa.hxiy?igsh=MW5zNGVscTJramVpcw=="
-               target="_blank"
-               style="display:block;text-decoration:none;color:#444;font-size:0.85rem;">
-               📸 Instagram: @ahzaaaa.hxiy
-            </a>
+            <p style="font-size:0.8rem;font-weight:600;color:#999;margin-bottom:10px;">KONTAK PENGEMBANG</p>
+            <a href="https://app.u.shopeepay.co.id/u/qsX9eS6EgzsSmx2aUwNda" target="_blank" style="display:block;text-decoration:none;color:#444;margin-bottom:8px;font-size:0.85rem;">☕ Buy Me Coffee (ShopeePay)</a>
+            <a href="https://wa.me/6285692107849" target="_blank" style="display:block;text-decoration:none;color:#444;margin-bottom:8px;font-size:0.85rem;">💬 WhatsApp: 085692107849</a>
+            <a href="https://www.instagram.com/ahzaaaa.hxiy?igsh=MW5zNGVscTJramVpcw==" target="_blank" style="display:block;text-decoration:none;color:#444;font-size:0.85rem;">📸 Instagram: @ahzaaaa.hxiy</a>
         </div>
 
-        <p onclick="closeSettings()" style="text-align:center;margin-top:15px;color:#999;cursor:pointer;">
-            [ TUTUP ]
-        </p>
+        <p onclick="closeSettings()" style="text-align:center;margin-top:15px;color:#999;cursor:pointer;">[ TUTUP ]</p>
     </div>
 </div>
 
-<!-- PREVIEW -->
+<!-- PREVIEW GAMBAR CHAT -->
 <div id="preview-screen" class="screen hidden">
     <div class="modal">
-
         <h3>Kirim Gambar?</h3>
-
         <img id="image-to-preview" style="width:100%;max-height:250px;object-fit:contain;border-radius:15px;margin:15px 0;">
-
         <div style="display:flex;gap:10px;">
-            <button onclick="closePreview()" class="primary-btn" style="background:#888;">
-                Batal
-            </button>
-
-            <button id="confirm-send-btn" class="primary-btn">
-                Kirim
-            </button>
+            <button onclick="closePreview()" class="primary-btn" style="background:#888;">Batal</button>
+            <button id="confirm-send-btn" class="primary-btn">Kirim</button>
         </div>
     </div>
 </div>
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import {
-    getDatabase,
-    ref,
-    push,
-    onChildAdded,
-    onChildRemoved,
-    get,
-    set,
-    update,
-    remove,
-    serverTimestamp,
-    query,
-    limitToLast
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, push, onChildAdded, onChildRemoved, get, set, update, remove, serverTimestamp, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAMaHdoCynL939eZ0cwlfuF0KXgOp-ES1A",
@@ -459,29 +373,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// ================================
-// APPWRITE CONFIG
-// ================================
-
-const APPWRITE_ENDPOINT = "https://sgp.cloud.appwrite.io/v1";
-const APPWRITE_PROJECT_ID = "6a06950400028fbc7ad3";
-const APPWRITE_DATABASE_ID = "6a0695bb00090ad1e2eb";
-const APPWRITE_COLLECTION_ID = "messages";
-const APPWRITE_BUCKET_ID = "6a069722002e995c025a";
-
-console.log("APPWRITE READY:", {
-    APPWRITE_ENDPOINT,
-    APPWRITE_PROJECT_ID,
-    APPWRITE_DATABASE_ID,
-    APPWRITE_COLLECTION_ID,
-    APPWRITE_BUCKET_ID
-});
-
 let currentUser = localStorage.getItem('chat_phone') || "";
 let currentPass = localStorage.getItem('chat_pass') || "";
 let selectedAvatar = "img/foto1.jpg";
 let tempFileData = null;
-let reactionCooldown = false;
 
 function escapeHtml(text){
     const div = document.createElement('div');
@@ -493,180 +388,90 @@ window.scrollToBottom = () => {
     setTimeout(() => {
         const win = document.getElementById('chat-window');
         win.scrollTop = win.scrollHeight;
-    },300);
+    }, 300);
 };
 
-function fixDriveUrl(url){
-    if(!url) return "";
-
-    const match = url.match(/[-\w]{25,}/);
-
-    if(match){
-        return `https://drive.google.com/thumbnail?id=${match[0]}&sz=w1000`;
-    }
-
-    return url;
-}
-
 window.addEventListener('load', () => {
-    if(currentUser && currentPass){
-        handleLogin(currentUser, currentPass);
-    }
+    if(currentUser && currentPass) handleLogin(currentUser, currentPass);
 });
 
 window.handleLogin = async (p,s) => {
-
     const phone = p || document.getElementById('phone').value.trim();
     const pass = s || document.getElementById('pass').value.trim();
-
-    if(!phone || !pass){
-        alert("Isi nomor HP dan password!");
-        return;
-    }
+    if(!phone || !pass){ alert("Isi nomor HP dan password!"); return; }
 
     try{
-
         const snap = await get(ref(db, 'users/' + phone));
-
         if(snap.exists() && snap.val().password === pass){
             loginSuccess(phone, pass, snap.val());
-        }
-
-        else if(!snap.exists()){
-
-            const newUser = {
-                password: pass,
-                name: document.getElementById('reg-name').value || "Anggota Kicaw",
-                avatar: "img/foto1.jpg"
-            };
-
+        } else if(!snap.exists()){
+            const newUser = { password: pass, name: document.getElementById('reg-name').value || "Anggota Kicaw", avatar: "img/foto1.jpg" };
             await set(ref(db, 'users/' + phone), newUser);
             loginSuccess(phone, pass, newUser);
-        }
-
-        else{
+        } else {
             alert("Password salah!");
         }
-
-    }catch(err){
-        console.log(err);
-        alert("Gagal koneksi!");
-    }
+    } catch(err) { alert("Gagal koneksi!"); }
 };
 
 function loginSuccess(phone, pass, data){
-
     currentUser = phone;
-
     localStorage.setItem('chat_phone', phone);
     localStorage.setItem('chat_pass', pass);
-
     document.getElementById('login-screen').classList.add('hidden');
-
     document.getElementById('my-name').innerText = data.name || phone;
-
     document.getElementById('my-avatar').src = data.avatar || 'img/foto1.jpg';
-
     selectedAvatar = data.avatar || 'img/foto1.jpg';
-
+    
     initChat();
     initReactions();
     setupStickers();
+    subscribeToVCSignals();
 }
 
 function setupStickers(){
-
     const panel = document.getElementById('sticker-panel');
     panel.innerHTML = "";
-
-    for(let i=1;i<=6;i++){
-
+    for(let i=1; i<=6; i++){
         const img = document.createElement('img');
-
         img.src = `stiker${i}.jpg`;
-
         img.style = "width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;cursor:pointer;";
-
         img.onclick = () => {
-
-            push(ref(db, 'messages'), {
-                sender: currentUser,
-                text: i,
-                isSticker: true,
-                timestamp: serverTimestamp()
-            });
-
+            push(ref(db, 'messages'), { sender: currentUser, text: i, isSticker: true, timestamp: serverTimestamp() });
             toggleStickers();
         };
-
         panel.appendChild(img);
     }
 }
 
 window.toggleStickers = () => {
-
     const panel = document.getElementById('sticker-panel');
-
-    panel.style.display = panel.style.display === 'grid'
-        ? 'none'
-        : 'grid';
+    panel.style.display = panel.style.display === 'grid' ? 'none' : 'grid';
+    window.scrollToBottom();
 };
 
-// ENTER SEND
-
-document.getElementById('msg-input')
-.addEventListener('keypress', (e) => {
-
-    if(e.key === 'Enter'){
-        document.getElementById('send-btn').click();
-    }
+document.getElementById('msg-input').addEventListener('keypress', (e) => {
+    if(e.key === 'Enter') document.getElementById('send-btn').click();
 });
 
-// SEND TEXT
-
 document.getElementById('send-btn').onclick = () => {
-
     const txt = document.getElementById('msg-input').value.trim();
-
     if(!txt) return;
-
-    push(ref(db, 'messages'), {
-        sender: currentUser,
-        text: txt,
-        isSticker:false,
-        isImage:false,
-        timestamp: serverTimestamp()
-    });
-
+    push(ref(db, 'messages'), { sender: currentUser, text: txt, isSticker:false, isImage:false, timestamp: serverTimestamp() });
     document.getElementById('msg-input').value = "";
-
     scrollToBottom();
 };
 
-// IMAGE PREVIEW
-
 document.getElementById('file-input').onchange = (e) => {
-
     const file = e.target.files[0];
-
     if(!file) return;
-
     const reader = new FileReader();
-
-    reader.readAsDataURL(file);
-
     reader.onload = () => {
-
-        tempFileData = {
-            base64: reader.result.split(',')[1],
-            type: file.type,
-            name: file.name
-        };
-
+        tempFileData = { base64: reader.result.split(',')[1], type: file.type, name: file.name };
         document.getElementById('image-to-preview').src = reader.result;
-
         document.getElementById('preview-screen').classList.remove('hidden');
     };
+    reader.readAsDataURL(file);
 };
 
 window.closePreview = () => {
@@ -674,105 +479,62 @@ window.closePreview = () => {
     tempFileData = null;
 };
 
-// DUMMY IMAGE SEND
-
 document.getElementById('confirm-send-btn').onclick = async () => {
-
     if(!tempFileData) return;
-
     push(ref(db, 'messages'), {
         sender: currentUser,
         text: document.getElementById('image-to-preview').src,
         isImage:true,
         timestamp: serverTimestamp()
     });
-
     closePreview();
 };
 
-// CHAT
-
 function initChat(){
-
     const win = document.getElementById('chat-window');
-
-    const messagesQuery = query(
-        ref(db, 'messages'),
-        limitToLast(100)
-    );
+    const messagesQuery = query(ref(db, 'messages'), limitToLast(100));
 
     onChildAdded(messagesQuery, async (snap) => {
-
         const d = snap.val();
-
         const isMe = d.sender === currentUser;
-
         let senderData = null;
 
         try{
             const userSnap = await get(ref(db, 'users/' + d.sender));
             senderData = userSnap.exists() ? userSnap.val() : null;
-        }catch(e){
-            console.log(e);
-        }
+        } catch(e){}
 
         const senderName = senderData?.name || d.sender || 'Anggota';
         const senderAvatar = senderData?.avatar || 'img/foto1.jpg';
-
         const row = document.createElement('div');
 
         row.className = `msg-row ${isMe ? 'me' : 'other'}`;
-
         row.id = 'msg-' + snap.key;
 
         let bodyHtml = "";
-
         const textContent = d.text || "";
 
-        if(d.isSticker){
-            bodyHtml = `<img src="stiker${textContent}.jpg">`;
-        }
+        if(d.isSticker) bodyHtml = `<img src="stiker${textContent}.jpg">`;
+        else if(d.isImage) bodyHtml = `<img src="${textContent}">`;
+        else bodyHtml = escapeHtml(textContent);
 
-        else if(d.isImage){
-            bodyHtml = `<img src="${textContent}">`;
-        }
-
-        else{
-            bodyHtml = escapeHtml(textContent);
-        }
-
-        let dt = d.timestamp
-            ? new Date(d.timestamp)
-            : new Date();
-
-        const time = dt.getHours().toString().padStart(2,'0')
-            + ':' +
-            dt.getMinutes().toString().padStart(2,'0');
+        let dt = d.timestamp ? new Date(d.timestamp) : new Date();
+        const time = dt.getHours().toString().padStart(2,'0') + ':' + dt.getMinutes().toString().padStart(2,'0');
 
         row.innerHTML = `
             <img src="${senderAvatar}" class="msg-avatar">
-
             <div class="msg ${isMe ? 'me' : 'other'} ${d.isSticker ? 'sticker-msg' : ''}">
-
-                <small style="font-size:0.6rem;display:block;opacity:0.8;font-weight:600;">
-                    ${isMe ? 'Anda' : senderName}
-                </small>
-
+                <small style="font-size:0.6rem;display:block;opacity:0.8;font-weight:600;">${isMe ? 'Anda' : senderName}</small>
                 ${bodyHtml}
-
                 <span class="time">${time}</span>
             </div>
         `;
 
         row.querySelector('.msg').onclick = () => {
-
-            if(isMe && confirm('Hapus pesan ini?')){
-                remove(ref(db, 'messages/' + snap.key));
-            }
+            if(isMe && confirm('Hapus pesan ini?')) remove(ref(db, 'messages/' + snap.key));
         };
 
         win.appendChild(row);
-
         scrollToBottom();
     });
 
@@ -781,106 +543,93 @@ function initChat(){
     });
 }
 
-// REACTION
-
 window.sendReaction = (emoji) => {
-
-    if(reactionCooldown) return;
-
-    reactionCooldown = true;
-
-    push(ref(db, 'reactions'), {
-        emoji,
-        time: Date.now()
-    });
-
-    setTimeout(() => {
-        reactionCooldown = false;
-    },1000);
+    push(ref(db, 'reactions'), { emoji, time: Date.now() });
 };
 
 function initReactions(){
-
     onChildAdded(ref(db, 'reactions'), (snap) => {
-
         const d = snap.val();
-
         if(Date.now() - d.time > 5000) return;
-
+        
         const el = document.createElement('div');
-
         el.className = 'floating-emoji';
         el.innerText = d.emoji;
-
         el.style.left = Math.random() * 80 + 10 + '%';
-
-        el.style.setProperty(
-            '--randX',
-            (Math.random() * 200 - 100) + 'px'
-        );
-
+        el.style.setProperty('--randX', (Math.random() * 200 - 100) + 'px');
+        
         document.getElementById('reaction-zone').appendChild(el);
-
-        setTimeout(() => {
-            el.remove();
-        },2000);
+        setTimeout(() => el.remove(), 2000);
     });
 }
 
-// SETTINGS
+document.getElementById('custom-avatar-input').onchange = (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const max = 150; 
+            let w = img.width; let h = img.height;
+            if(w > max || h > max){
+                if(w > h) { h *= max/w; w = max; }
+                else { w *= max/h; h = max; }
+            }
+            canvas.width = w; canvas.height = h;
+            ctx.drawImage(img, 0, 0, w, h);
+            selectedAvatar = canvas.toDataURL('image/jpeg', 0.8);
+            openSettings(); 
+        };
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+};
 
 window.openSettings = () => {
+    document.getElementById('settings-screen').classList.remove('hidden');
 
-    document.getElementById('settings-screen')
-    .classList.remove('hidden');
+    const customPreview = document.getElementById('custom-avatar-preview');
+    if(selectedAvatar.startsWith('data:image')){
+        customPreview.src = selectedAvatar;
+        customPreview.style.display = 'block';
+    } else {
+        customPreview.style.display = 'none';
+    }
 
     const list = document.getElementById('avatar-list');
-
     list.innerHTML = "";
 
-    for(let i=1;i<=6;i++){
-
+    for(let i=1; i<=6; i++){
         const url = `img/foto${i}.jpg`;
-
         const img = document.createElement('img');
-
         img.src = url;
-
         img.style = `
-            width:100%;
-            aspect-ratio:1;
-            border-radius:50%;
-            object-fit:cover;
-            cursor:pointer;
+            width:100%; aspect-ratio:1; border-radius:50%; object-fit:cover; cursor:pointer;
             border:3px solid ${selectedAvatar === url ? 'var(--pink)' : 'transparent'};
         `;
-
         img.onclick = () => {
             selectedAvatar = url;
             openSettings();
         };
-
         list.appendChild(img);
     }
 };
 
-window.closeSettings = () => {
-    document.getElementById('settings-screen').classList.add('hidden');
-};
+window.closeSettings = () => document.getElementById('settings-screen').classList.add('hidden');
 
 window.saveProfile = async () => {
-
     let up = {
         avatar: selectedAvatar,
         name: document.getElementById('edit-name').value || document.getElementById('my-name').innerText
     };
-
     if(document.getElementById('edit-pass').value){
         up.password = document.getElementById('edit-pass').value;
     }
-
     await update(ref(db, 'users/' + currentUser), up);
-
     location.reload();
 };
 
@@ -889,6 +638,129 @@ window.handleLogout = () => {
     location.reload();
 };
 
+const { Client, Databases, ID } = Appwrite;
+const awClient = new Client()
+    .setEndpoint('https://sgp.cloud.appwrite.io/v1')
+    .setProject('6a06950400028fbc7ad3');
+const awDb = new Databases(awClient);
+const AW_DB_ID = '6a0695bb00090ad1e2eb';
+const AW_SIG_COLLECTION = 'signals';
+
+let localStream;
+let peerConnections = {};
+const iceServers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+window.joinVC = async () => {
+    const vcArea = document.getElementById('vc-area');
+    if(!vcArea.classList.contains('hidden')) return; 
+    vcArea.classList.remove('hidden');
+
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        document.getElementById('local-video').srcObject = localStream;
+        
+        await awDb.createDocument(AW_DB_ID, AW_SIG_COLLECTION, ID.unique(), {
+            type: 'join', data: 'hello', to: 'all', from: currentUser
+        });
+    } catch(err) {
+        alert("Gagal akses kamera/mic. Pastikan izin browser nyala! (Gunakan HTTPS/Localhost)");
+        vcArea.classList.add('hidden');
+    }
+};
+
+window.leaveVC = () => {
+    document.getElementById('vc-area').classList.add('hidden');
+    if(localStream) localStream.getTracks().forEach(track => track.stop());
+    Object.values(peerConnections).forEach(pc => pc.close());
+    peerConnections = {};
+    
+    const grid = document.getElementById('video-grid');
+    while(grid.children.length > 1) { grid.removeChild(grid.lastChild); }
+};
+
+window.toggleAudio = () => {
+    if(!localStream) return;
+    const track = localStream.getAudioTracks()[0];
+    if(track) {
+        track.enabled = !track.enabled;
+        const btn = document.getElementById('btn-audio');
+        btn.innerText = track.enabled ? '🎤' : '🔇';
+        btn.style.background = track.enabled ? '#fff' : '#ff4757';
+        btn.style.color = track.enabled ? '#333' : '#fff';
+    }
+};
+
+window.toggleVideo = () => {
+    if(!localStream) return;
+    const track = localStream.getVideoTracks()[0];
+    if(track) {
+        track.enabled = !track.enabled;
+        const btn = document.getElementById('btn-video');
+        btn.innerText = track.enabled ? '📷' : '🚫';
+        btn.style.background = track.enabled ? '#fff' : '#ff4757';
+        btn.style.color = track.enabled ? '#333' : '#fff';
+    }
+};
+
+function subscribeToVCSignals() {
+    awClient.subscribe(`databases.${AW_DB_ID}.collections.${AW_SIG_COLLECTION}.documents`, async (res) => {
+        if (!res.events.includes("databases.*.collections.*.documents.*.create")) return;
+        const signal = res.payload;
+        
+        if(signal.from === currentUser) return;
+        if(signal.to !== 'all' && signal.to !== currentUser) return;
+        if(!localStream) return; 
+
+        if(signal.type === 'join') {
+            const pc = createPeer(signal.from);
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            await awDb.createDocument(AW_DB_ID, AW_SIG_COLLECTION, ID.unique(), { type: 'offer', data: JSON.stringify(offer), to: signal.from, from: currentUser });
+        }
+        else if(signal.type === 'offer') {
+            const pc = createPeer(signal.from);
+            await pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(signal.data)));
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            await awDb.createDocument(AW_DB_ID, AW_SIG_COLLECTION, ID.unique(), { type: 'answer', data: JSON.stringify(answer), to: signal.from, from: currentUser });
+        }
+        else if(signal.type === 'answer') {
+            const pc = peerConnections[signal.from];
+            if(pc) await pc.setRemoteDescription(new RTCSessionDescription(JSON.parse(signal.data)));
+        }
+        else if(signal.type === 'candidate') {
+            const pc = peerConnections[signal.from];
+            if(pc) await pc.addIceCandidate(new RTCIceCandidate(JSON.parse(signal.data)));
+        }
+    });
+}
+
+function createPeer(targetId) {
+    if(peerConnections[targetId]) return peerConnections[targetId];
+    
+    const pc = new RTCPeerConnection(iceServers);
+    peerConnections[targetId] = pc;
+    
+    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+    
+    pc.onicecandidate = (e) => {
+        if(e.candidate) {
+            awDb.createDocument(AW_DB_ID, AW_SIG_COLLECTION, ID.unique(), { type: 'candidate', data: JSON.stringify(e.candidate), to: targetId, from: currentUser });
+        }
+    };
+    
+    pc.ontrack = (e) => {
+        let vid = document.getElementById('v-' + targetId);
+        if(!vid) {
+            vid = document.createElement('video'); vid.id = 'v-' + targetId; vid.autoplay = true; vid.playsinline = true;
+            vid.style = "width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; background: #222; transform: scaleX(-1); border: 2px solid #555;";
+            document.getElementById('video-grid').appendChild(vid);
+        }
+        vid.srcObject = e.streams[0];
+    };
+    
+    return pc;
+}
 </script>
 </body>
 </html>
